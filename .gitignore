@@ -1,0 +1,11 @@
+# 빌드 결과물. build.sh 로 언제든 다시 만든다.
+build/
+
+# macOS
+.DS_Store
+
+# Xcode (쓰지는 않지만 열어 볼 수 있으니)
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+DerivedData/
