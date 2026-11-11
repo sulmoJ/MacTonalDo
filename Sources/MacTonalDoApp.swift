@@ -1,8 +1,13 @@
 import SwiftUI
 
 @main
-struct MacTonaldoApp: App {
+struct MacTonalDoApp: App {
     @StateObject private var store = TodoStore()
+
+    init() {
+        // 메뉴바 앱은 떠 있어야 쓸모가 있다. 처음 켤 때 한 번만 자동 실행을 걸어 둔다.
+        LoginItem.enableOnFirstRun()
+    }
 
     var body: some Scene {
         MenuBarExtra {

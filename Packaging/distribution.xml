@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- productbuild 가 읽는 설치 화면 설명서. __VERSION__ 은 package.sh 가 채운다. -->
+<installer-gui-script minSpecVersion="2">
+    <title>MacTonalDo</title>
+    <organization>local.mactonaldo</organization>
+
+    <!-- 고를 것이 하나뿐이라 선택 화면은 건너뛴다. -->
+    <options customize="never" require-scripts="true" hostArchitectures="arm64,x86_64"/>
+
+    <volume-check>
+        <allowed-os-versions>
+            <os-version min="14.0"/>
+        </allowed-os-versions>
+    </volume-check>
+
+    <welcome file="welcome.html" mime-type="text/html"/>
+    <license file="LICENSE.txt" mime-type="text/plain"/>
+    <conclusion file="conclusion.html" mime-type="text/html"/>
+
+    <choices-outline>
+        <line choice="default">
+            <line choice="local.mactonaldo.app"/>
+        </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="local.mactonaldo.app" visible="false">
+        <pkg-ref id="local.mactonaldo.app"/>
+    </choice>
+
+    <pkg-ref id="local.mactonaldo.app" version="__VERSION__" onConclusion="none">component.pkg</pkg-ref>
+</installer-gui-script>

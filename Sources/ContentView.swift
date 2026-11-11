@@ -1,5 +1,4 @@
 import SwiftUI
-import ServiceManagement
 import UniformTypeIdentifiers
 
 /// 메뉴바 아이콘을 누르면 열리는 패널 전체.
@@ -392,17 +391,16 @@ struct ContentView: View {
 
     private var launchAtLoginBinding: Binding<Bool> {
         Binding(
-            get: { SMAppService.mainApp.status == .enabled },
+            get: { LoginItem.isEnabled },
             set: { enable in
-                do {
-                    if enable {
-                        try SMAppService.mainApp.register()
-                    } else {
-                        try SMAppService.mainApp.unregister()
-                    }
-                } catch {
-                    NSSound.beep()
-                }
+                guard let problem = LoginItem.setEnabled(enable) else { return }
+
+                let alert = NSAlert()
+                alert.messageText = problem
+                alert.informativeText = "시스템 설정 → 일반 → 로그인 항목에서 직접 추가할 수 있습니다."
+                alert.alertStyle = .warning
+                NSApp.activate(ignoringOtherApps: true)
+                alert.runModal()
             }
         )
     }

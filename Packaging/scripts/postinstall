@@ -1,0 +1,21 @@
+#!/bin/bash
+# 설치가 끝나면 바로 띄운다. 다시 로그인할 때까지 기다리지 않게.
+#
+# 설치 관리자는 root 로 돌기 때문에 그냥 open 하면 엉뚱한 자리에 뜬다.
+# 지금 화면을 쓰고 있는 사람 자격으로 띄운다.
+#
+# 무슨 일이 있어도 0 으로 끝낸다. 여기서 실패해도 설치 자체는 끝난 것이다.
+
+APP="/Applications/MacTonalDo.app"
+
+uid="$(/usr/bin/stat -f %u /dev/console 2>/dev/null || true)"
+if [ -z "$uid" ] || [ "$uid" = "0" ]; then
+    exit 0
+fi
+
+# 예전 판이 떠 있으면 내린다. 새 판이 그 자리를 받는다.
+/usr/bin/pkill -x MacTonalDo 2>/dev/null || true
+/bin/sleep 1
+
+/bin/launchctl asuser "$uid" /usr/bin/open -a "$APP" 2>/dev/null || true
+exit 0

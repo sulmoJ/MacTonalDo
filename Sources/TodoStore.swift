@@ -20,7 +20,7 @@ final class TodoStore: ObservableObject {
         } else {
             let support = FileManager.default
                 .urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            let dir = support.appendingPathComponent("macTonaldo", isDirectory: true)
+            let dir = support.appendingPathComponent("MacTonalDo", isDirectory: true)
             try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
             fileURL = dir.appendingPathComponent("todos.json")
             Self.bringOverLegacyStore(into: fileURL, under: support)
@@ -37,18 +37,24 @@ final class TodoStore: ObservableObject {
 
     // MARK: - 저장소
 
-    /// 앱 이름이 MenuTodo 이던 시절의 자료를 새 폴더로 한 번 베껴 온다.
+    /// 이름이 바뀌기 전 폴더에 있던 자료를 새 폴더로 한 번 베껴 온다.
     /// 옮기지 않고 베끼는 건, 새 이름으로 뭔가 어긋나도 옛 파일이 그대로 남아 있게 하려는 것이다.
+    ///
+    /// 맥 기본 디스크는 대소문자를 가리지 않아 `macTonaldo` 와 `MacTonalDo` 가 같은 폴더다.
+    /// 대소문자를 가리는 디스크에서만 실제로 베끼는 일이 생긴다.
     private static func bringOverLegacyStore(into newURL: URL, under support: URL) {
         let fm = FileManager.default
         guard !fm.fileExists(atPath: newURL.path) else { return }
 
-        let legacy = support
-            .appendingPathComponent("MenuTodo", isDirectory: true)
-            .appendingPathComponent("todos.json")
-        guard fm.fileExists(atPath: legacy.path) else { return }
+        for name in ["macTonaldo", "MenuTodo"] {
+            let legacy = support
+                .appendingPathComponent(name, isDirectory: true)
+                .appendingPathComponent("todos.json")
+            guard fm.fileExists(atPath: legacy.path) else { continue }
 
-        try? fm.copyItem(at: legacy, to: newURL)
+            try? fm.copyItem(at: legacy, to: newURL)
+            return
+        }
     }
 
     private func load() {

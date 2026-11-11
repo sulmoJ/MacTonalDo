@@ -3,15 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>macTonaldo</string>
+	<string>MacTonalDo</string>
 	<key>CFBundleExecutable</key>
-	<string>macTonaldo</string>
+	<string>MacTonalDo</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>local.mactonaldo</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>macTonaldo</string>
+	<string>MacTonalDo</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

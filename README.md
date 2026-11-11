@@ -1,4 +1,4 @@
-# macTonaldo
+# MacTonalDo
 
 맥북 메뉴바에 사는 로컬 투두 앱. 아이콘을 누르면 아래로 패널이 열리고,
 그 안에서 할 일 · 하위 할 일 · 메모를 바로 관리한다.
@@ -8,18 +8,31 @@
 
 이름은 mac 과 맥도날드를 붙여 지었다. 하는 일과는 상관없다.
 
+## 설치
+
+[Releases](https://github.com/sulmoJ/MacTonalDo/releases) 에서 `MacTonalDo-1.0.0.pkg` 를
+받아 두 번 누르면 된다. `/Applications` 에 깔리고 설치가 끝나는 대로 바로 뜬다.
+
+서명도 공증도 없는 설치본이라 처음에는 macOS 가 막는다.
+**`.pkg` 를 우클릭 → `열기`** 로 한 번 열어 주면 그 뒤로는 묻지 않는다.
+터미널이 편하면 이쪽도 된다.
+
+```bash
+sudo installer -pkg MacTonalDo-1.0.0.pkg -target /
+```
+
 ## 빌드와 실행
 
 ```bash
 ./build.sh
-open build/macTonaldo.app
+open build/MacTonalDo.app
 ```
 
 Xcode 없이 Command Line Tools 의 `swiftc` 만으로 빌드한다.
-`build/macTonaldo.app` 을 `/Applications` 로 옮겨 두면 평소처럼 쓸 수 있다.
+`build/MacTonalDo.app` 을 `/Applications` 로 옮겨 두면 평소처럼 쓸 수 있다.
 
 ```bash
-cp -R build/macTonaldo.app /Applications/
+cp -R build/MacTonalDo.app /Applications/
 ```
 
 ## 쓰는 법
@@ -180,7 +193,7 @@ cp -R build/macTonaldo.app /Applications/
 ## 데이터
 
 ```
-~/Library/Application Support/macTonaldo/todos.json
+~/Library/Application Support/MacTonalDo/todos.json
 ```
 
 사람이 읽을 수 있는 JSON 이라 손으로 고치거나 백업해도 된다.
@@ -197,7 +210,7 @@ cp -R build/macTonaldo.app /Applications/
 
 | 파일 | 역할 |
 | --- | --- |
-| `Sources/MacTonaldoApp.swift` | 진입점. `MenuBarExtra` 로 메뉴바 아이콘과 패널을 만든다 |
+| `Sources/MacTonalDoApp.swift` | 진입점. `MenuBarExtra` 로 메뉴바 아이콘과 패널을 만든다 |
 | `Sources/ContentView.swift` | 패널 전체 — 머리말, 날짜 띠, 입력창, 목록, 진행률 |
 | `Sources/TodoRowView.swift` | 할 일 한 줄과 하위 할 일 줄 |
 | `Sources/EditableText.swift` | 평소엔 `Text`, 클릭하면 `TextField` 로 바뀌는 라벨 |
@@ -210,14 +223,17 @@ cp -R build/macTonaldo.app /Applications/
 | `Sources/DayFormat.swift` | 날짜를 하루 단위로만 다루는 거들기와 한국어 날짜 이름 |
 | `Sources/Scrum.swift` | 작업일 범위와 데일리 스크럼 글 만들기 |
 | `Sources/ScrumView.swift` | 스크럼 미리보기 화면 |
+| `Sources/LoginItem.swift` | 로그인할 때 자동 실행 — `SMAppService` 와 LaunchAgent |
 | `Resources/Info.plist` | `LSUIElement` 로 Dock 아이콘 없이 메뉴바에만 띄운다 |
+| `Resources/AppIcon.icns` | 앱 아이콘. `Tools/make-icon.sh` 가 구워 낸다 |
+| `Tools/MakeAppIcon.swift` | 아이콘을 코드로 그린다. 그림 파일을 들고 다니지 않으려고 |
+| `Packaging/` | `.pkg` 설치 화면 문구와 설치 뒤 실행 스크립트 |
+| `build.sh` | 유니버설(arm64 + x86_64) `.app` 빌드 |
+| `package.sh` | `.pkg` 설치본 만들기 |
 
 ## 알아 둘 점
 
-- ad-hoc 서명이라 `로그인할 때 자동 실행` 등록이 실패할 수 있다.
-  실패하면 소리가 한 번 나고 토글이 되돌아간다.
-  그때는 시스템 설정 → 일반 → 로그인 항목에 직접 추가하면 된다.
-- macOS 14 이상이 필요하다.
+- macOS 14 이상이 필요하다. Apple Silicon 과 Intel 둘 다 돈다.
 - 패널 배경은 일부러 불투명하게 칠했다. `MenuBarExtra` 기본 재질은 반투명이라
   뒤에 있는 창에 따라 글자 가독성이 달라진다. 바꾸고 싶으면
   `ContentView.swift` 의 `chromeBackground` / `listBackground` 를 손보면 된다.
@@ -227,8 +243,67 @@ cp -R build/macTonaldo.app /Applications/
 - 스크럼의 `복사하기` 는 지난 미완료를 **실제로 옮긴다.** 되돌리기는 없으니
   옮기고 싶지 않으면 체크박스를 먼저 끄면 된다.
 - 공휴일은 구분하지 않는다. 월~금 범위에서 주중 공휴일은 작업일로 친다.
-- 처음 열 때 Gatekeeper 가 막으면 `우클릭 → 열기` 로 한 번만 열어 주면 된다.
-  ad-hoc 서명이라 공증(notarization)이 없다.
+- 서명도 공증도 없다. 처음 열 때 Gatekeeper 가 막으면 `우클릭 → 열기` 로 한 번만
+  열어 주면 된다. 제대로 없애려면 아래 '배포' 를 보라.
+- 아이콘은 그림 파일이 아니라 코드로 그린다. 모양을 바꿨으면
+  `./Tools/make-icon.sh` 를 돌려 `Resources/AppIcon.icns` 를 다시 굽는다.
+
+## 자동 실행
+
+메뉴바 앱은 떠 있지 않으면 없는 것과 같다. 그래서 **처음 실행할 때 한 번**
+로그인 자동 실행을 걸어 둔다. 한 번만 한다 — 꺼 두면 다시 켜지 않는다.
+켜고 끄는 건 `⋯` → `로그인할 때 자동 실행`.
+
+안쪽은 두 갈래다.
+
+| 갈래 | 언제 쓰나 | 어디에 남나 |
+| --- | --- | --- |
+| `SMAppService` | 먼저 이쪽을 쓴다 | 시스템 설정 → 일반 → 로그인 항목 |
+| LaunchAgent | 위가 거절당하면 | `~/Library/LaunchAgents/local.mactonaldo.login.plist` |
+
+서명이 없거나 앱이 `/Applications` 밖(내려받기 폴더, 빌드 폴더)에 있으면
+`SMAppService` 등록이 거절되곤 한다. 그때 LaunchAgent 로 내려간다.
+이쪽은 서명을 따지지 않는다. 둘 다 안 되면 까닭을 알림창으로 보여 준다.
+
+LaunchAgent 는 **다음 로그인부터** 먹는다. 깔자마자 한 벌 더 띄우지는 않는다.
+
+## 배포
+
+```bash
+./package.sh          # dist/MacTonalDo-1.0.0.pkg
+```
+
+유니버설로 빌드해서 `/Applications` 에 깔리는 `.pkg` 를 만든다.
+설치가 끝나면 `Packaging/scripts/postinstall` 이 지금 로그인한 사람 자격으로 앱을 띄운다.
+
+그냥 돌리면 **서명도 공증도 없는** 설치본이 나온다. 쓸 수는 있지만 받는 사람마다
+`우클릭 → 열기` 를 해야 하고, 조직에 따라 아예 막히기도 한다.
+
+제대로 하려면 [Apple Developer Program](https://developer.apple.com/programs/) (연 $99) 에
+들어가 인증서 두 장을 받는다.
+
+| 환경 변수 | 받을 인증서 | 하는 일 |
+| --- | --- | --- |
+| `APP_SIGN_IDENTITY` | Developer ID Application | `.app` 에 서명 |
+| `INSTALLER_SIGN_IDENTITY` | Developer ID Installer | `.pkg` 에 서명 |
+| `NOTARY_PROFILE` | — | `notarytool` 키체인 프로파일 이름. 공증까지 맡긴다 |
+
+```bash
+# 공증 자격을 키체인에 한 번 넣어 둔다
+xcrun notarytool store-credentials mactonaldo \
+  --apple-id "you@example.com" --team-id ABCDE12345 --password "앱 암호"
+
+APP_SIGN_IDENTITY="Developer ID Application: 이름 (ABCDE12345)" \
+INSTALLER_SIGN_IDENTITY="Developer ID Installer: 이름 (ABCDE12345)" \
+NOTARY_PROFILE=mactonaldo \
+./package.sh
+```
+
+이렇게 나온 `.pkg` 는 아무 맥에서나 경고 없이 깔린다.
+
+사내에 MDM(Jamf, Kandji 같은 것)이 있으면 서명하지 않은 `.pkg` 라도
+그쪽으로 밀어 넣는 길이 있다. 다만 MDM 마다 서명을 요구하는 설정이 다르니
+담당자에게 먼저 물어보는 게 빠르다.
 
 ## 판 올림
 

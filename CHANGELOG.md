@@ -24,22 +24,27 @@
 - **끌어서 순서 바꾸기** — 손잡이를 끌어 같은 날짜 안에서 자리를 옮긴다.
 - **공유용 내보내기** — 텍스트 / 마크다운, 남은 할 일만, 전체 날짜 묶음.
   클립보드로 복사하거나 파일로 저장한다.
-- **로그인할 때 자동 실행** — `⋯` 메뉴에서 켠다.
+- **로그인할 때 자동 실행** — 처음 실행할 때 한 번 저절로 걸린다.
+  `SMAppService` 가 거절당하면 LaunchAgent 로 내려간다. `⋯` 메뉴에서 끈다.
 - **불투명한 배경** — 뒤쪽 창 색에 따라 글씨가 흐려지지 않는다.
+- **앱 아이콘** — 코드로 그린다(`Tools/make-icon.sh`). 32px 이하에서는
+  목록 줄을 빼고 체크만 크게 그려 뭉개지지 않게 했다.
+- **설치본** — `./package.sh` 로 `/Applications` 에 까는 `.pkg` 를 만든다.
+  Apple Silicon 과 Intel 을 한 덩어리로 묶는다.
 
 ### 알아 둘 점
 
-- 자료는 `~/Library/Application Support/macTonaldo/todos.json` 한 곳에만 있다.
+- 자료는 `~/Library/Application Support/MacTonalDo/todos.json` 한 곳에만 있다.
   네트워크는 쓰지 않는다.
 - 공휴일은 따로 구분하지 않는다. 작업일 범위는 요일로만 가른다.
 - 스크럼의 `지난 미완료를 오늘로 가져오기` 는 복사할 때 실제로 날짜를 옮긴다.
   되돌리기는 없다.
-- 서명은 ad-hoc 이라 처음 열 때 Gatekeeper 가 막을 수 있다.
-  `우클릭 → 열기` 로 한 번 열어 주면 된다.
-- 만들던 중 이름이 `MenuTodo` 에서 `macTonaldo` 로 바뀌었다.
+- 서명도 공증도 없다. `.pkg` 를 처음 열 때 `우클릭 → 열기` 가 필요하다.
+  Developer ID 인증서가 생기면 `package.sh` 에 환경 변수로 넘겨 주면 된다.
+- 만들던 중 이름이 `MenuTodo` 에서 `MacTonalDo` 로 바뀌었다.
   옛 이름으로 쓰던 자료는 첫 실행 때 새 폴더로 베껴 온다.
   다만 번들 식별자도 함께 바뀌어서, `완료한 항목 숨기기` 와 `작업일 범위` 는
   다시 골라야 하고 옛 이름으로 등록해 둔 로그인 항목은
   시스템 설정 → 일반 → 로그인 항목에서 지워야 한다.
 
-[1.0.0]: https://github.com/sulmoJ/macTonaldo/releases/tag/v1.0.0
+[1.0.0]: https://github.com/sulmoJ/MacTonalDo/releases/tag/v1.0.0
