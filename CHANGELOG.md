@@ -3,6 +3,26 @@
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르고,
 판 번호는 [유의적 버전](https://semver.org/lang/ko/) 을 따른다.
 
+## [1.0.1] — 2026-11-11
+
+설치본만 고친 판. 앱이 하는 일은 1.0.0 과 같다.
+
+### 고친 것
+
+- **`/Applications` 가 아닌 곳에 깔리던 것** — 설치 관리자는 같은 번들 식별자의 앱이
+  이미 다른 자리에 있으면 `/Applications` 를 버리고 그 자리를 찾아가 덮어쓴다
+  (bundle relocation). 그래서 앱을 한 번이라도 다른 데서 돌려 본 맥에서는
+  엉뚱한 곳에 깔리고, 그 자리가 임시 폴더였다면 자동 실행도 함께 어긋났다.
+  `BundleIsRelocatable` 을 꺼서 언제나 `/Applications` 에 깔리게 했다.
+- **꾸러미에 섞여 들던 짝 파일** — macOS 가 파일마다 붙이는 `com.apple.provenance`
+  때문에 `._MacTonalDo.app` 같은 AppleDouble 파일이 함께 담겼다. 빌드한 뒤 떼어 낸다.
+
+### 알아 둘 점
+
+- 1.0.0 을 이미 깔았다면, 앱이 `/Applications` 에 없을 수 있다.
+  1.0.1 을 깔면 제 자리에 들어가지만, 옛 자리에 남은 앱은 직접 버려야 한다.
+  설치 관리자가 깐 앱은 macOS 의 앱 관리 보호를 받아 Finder 에서 휴지통으로 끌어야 지워진다.
+
 ## [1.0.0] — 2026-11-10
 
 첫 판. 메뉴바 투두 앱으로 쓸 만한 만큼은 갖췄다.
@@ -47,4 +67,5 @@
   다시 골라야 하고 옛 이름으로 등록해 둔 로그인 항목은
   시스템 설정 → 일반 → 로그인 항목에서 지워야 한다.
 
+[1.0.1]: https://github.com/sulmoJ/MacTonalDo/releases/tag/v1.0.1
 [1.0.0]: https://github.com/sulmoJ/MacTonalDo/releases/tag/v1.0.0

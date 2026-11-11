@@ -4,12 +4,13 @@
 # 환경 변수
 #   UNIVERSAL=0          이 맥의 아키텍처로만 빌드한다 (빠르다. 혼자 쓸 때)
 #   APP_SIGN_IDENTITY    Developer ID Application 인증서 이름. 없으면 ad-hoc 서명.
+#   BUILD_DIR            결과를 놓을 자리. 기본은 build/
 set -euo pipefail
 
 APP_NAME="MacTonalDo"
 MIN_MACOS="14.0"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUILD="$ROOT/build"
+BUILD="${BUILD_DIR:-$ROOT/build}"
 APP="$BUILD/$APP_NAME.app"
 BIN="$APP/Contents/MacOS/$APP_NAME"
 

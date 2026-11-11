@@ -10,7 +10,7 @@
 
 ## 설치
 
-[Releases](https://github.com/sulmoJ/MacTonalDo/releases) 에서 `MacTonalDo-1.0.0.pkg` 를
+[Releases](https://github.com/sulmoJ/MacTonalDo/releases) 에서 `MacTonalDo-1.0.1.pkg` 를
 받아 두 번 누르면 된다. `/Applications` 에 깔리고 설치가 끝나는 대로 바로 뜬다.
 
 서명도 공증도 없는 설치본이라 처음에는 macOS 가 막는다.
@@ -18,7 +18,7 @@
 터미널이 편하면 이쪽도 된다.
 
 ```bash
-sudo installer -pkg MacTonalDo-1.0.0.pkg -target /
+sudo installer -pkg MacTonalDo-1.0.1.pkg -target /
 ```
 
 ## 빌드와 실행
@@ -270,11 +270,16 @@ LaunchAgent 는 **다음 로그인부터** 먹는다. 깔자마자 한 벌 더 �
 ## 배포
 
 ```bash
-./package.sh          # dist/MacTonalDo-1.0.0.pkg
+./package.sh          # dist/MacTonalDo-1.0.1.pkg
 ```
 
 유니버설로 빌드해서 `/Applications` 에 깔리는 `.pkg` 를 만든다.
 설치가 끝나면 `Packaging/scripts/postinstall` 이 지금 로그인한 사람 자격으로 앱을 띄운다.
+`BUILD_DIR` 를 주면 `build/` 말고 다른 자리에 빌드한다.
+
+`.pkg` 는 `BundleIsRelocatable` 을 꺼서 만든다. 끄지 않으면 설치 관리자가
+같은 번들 식별자의 앱이 이미 있는 자리를 찾아가 `/Applications` 대신 그 위에 덮어쓴다.
+받는 사람이 앱을 다른 폴더에서 한 번이라도 돌려 봤다면 바로 걸리는 함정이다.
 
 그냥 돌리면 **서명도 공증도 없는** 설치본이 나온다. 쓸 수는 있지만 받는 사람마다
 `우클릭 → 열기` 를 해야 하고, 조직에 따라 아예 막히기도 한다.
