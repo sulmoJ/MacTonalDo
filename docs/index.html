@@ -412,18 +412,35 @@ footer nav { margin-bottom: 12px; display: flex; gap: 18px; justify-content: cen
 <section id="install">
   <div class="wrap">
     <h2>설치</h2>
-    <p class="lede">서명을 받지 않은 앱이라 처음 한 번만 손이 더 간다.</p>
+    <p class="lede">서명을 받지 않은 앱이라 처음 한 번만 손이 더 간다. 막히는 게 정상이니 당황하지 마세요.</p>
 
     <ol class="steps">
-      <li><b>내려받은 <code>.pkg</code> 를 우클릭 → <code>열기</code>.</b> 두 번 눌러 열면 macOS 가 막는다. 우클릭으로 열어야 "그래도 열기" 가 나온다.</li>
-      <li><b>안내를 따라 넘어간다.</b> 맥 암호를 한 번 묻는다. <code>/Applications</code> 에 깔린다.</li>
-      <li><b>끝.</b> 설치가 끝나면 앱이 바로 뜨고, 다음 로그인부터는 저절로 뜬다.</li>
+      <li><b>내려받은 <code>.pkg</code> 를 두 번 누른다.</b> macOS 가 막습니다. 여기까지는 정상입니다.</li>
+      <li><b>시스템 설정 → 개인정보 보호 및 보안</b> 을 열고 <b>맨 아래로</b> 내립니다. 차단됐다는 줄과 함께 <code>그래도 열기</code> 단추가 있습니다. 누릅니다.</li>
+      <li><b>암호를 넣고 안내를 따라갑니다.</b> <code>/Applications</code> 에 깔리고, 끝나면 앱이 바로 뜹니다. 다음 로그인부터는 저절로 뜹니다.</li>
     </ol>
+
+    <div class="note">
+      <b><code>그래도 열기</code> 가 안 보이나요?</b> 이 단추는 막힌 뒤 <b>한 시간 안에만</b> 나타납니다.
+      시간이 지났으면 <code>.pkg</code> 를 다시 두 번 눌러 한 번 더 막힌 다음, 바로 설정을 여세요.
+    </div>
+
+    <div class="note">
+      <b>우클릭 → 열기 는 이제 안 됩니다.</b> macOS 15 Sequoia 부터 그 길이 없어졌습니다.
+      다른 곳에서 그렇게 안내하는 글을 보셨다면 오래된 것입니다.
+    </div>
+
+    <div class="note">
+      <b>터미널이 편하시면</b> 한 줄로 끝납니다. 내려받은 파일에 붙은 격리 꼬리표를 떼고 바로 엽니다.
+      <div class="sample" style="margin-top:11px">xattr -d com.apple.quarantine ~/Downloads/MacTonalDo-1.1.0.pkg
+open ~/Downloads/MacTonalDo-1.1.0.pkg</div>
+    </div>
 
     <div class="note">
       <b>왜 막히나요?</b> Apple 개발자 프로그램에 들어가야 받을 수 있는 서명이 아직 없어서입니다.
       앱이 수상해서가 아니라, 누가 만들었는지 Apple 이 보증해 주지 않았다는 뜻입니다.
       소스는 전부 <a href="https://github.com/sulmoJ/MacTonalDo" style="color:var(--accent)">GitHub</a> 에 있으니 직접 빌드해 쓰셔도 됩니다.
+      회사에서 관리하는 맥이라면 정책이 서명 없는 설치본을 아예 막아 두었을 수 있고, 그때는 위 방법도 통하지 않습니다.
     </div>
 
     <div class="note">
