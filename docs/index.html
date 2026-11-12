@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MacTonalDo</title>
+<meta name="description" content="메뉴바에 사는 맥 투두 앱. 날짜별로 적고, 데일리 스크럼을 한 번에 복사한다. 자료는 내 맥에만 있다.">
+<link rel="icon" href="assets/favicon.png">
+<meta property="og:title" content="MacTonalDo">
+<meta property="og:description" content="메뉴바에 사는 맥 투두 앱. 데일리 스크럼을 한 번에 복사한다.">
+<meta property="og:image" content="assets/icon-256.png">
+<meta property="og:type" content="website">
+<style>
+:root {
+  --gold-1: #ffcb47;
+  --gold-2: #f08a0c;
+  --accent: #c76a00;
+
+  --bg: #fdfbf7;
+  --bg-soft: #f5f1ea;
+  --panel: #ffffff;
+  --ink: #1b1813;
+  --ink-2: #5d564c;
+  --ink-3: #8b8377;
+  --line: #e7e0d5;
+  --shadow: 0 18px 40px -12px rgba(60, 42, 12, .22);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #ffc14d;
+    --bg: #15130f;
+    --bg-soft: #1d1a15;
+    --panel: #221e18;
+    --ink: #f4efe6;
+    --ink-2: #b6ac9c;
+    --ink-3: #857c6e;
+    --line: #322c23;
+    --shadow: 0 18px 44px -12px rgba(0, 0, 0, .6);
+  }
+}
+:root[data-theme="dark"] {
+  --accent: #ffc14d;
+  --bg: #15130f;
+  --bg-soft: #1d1a15;
+  --panel: #221e18;
+  --ink: #f4efe6;
+  --ink-2: #b6ac9c;
+  --ink-3: #857c6e;
+  --line: #322c23;
+  --shadow: 0 18px 44px -12px rgba(0, 0, 0, .6);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard",
+               "Segoe UI", system-ui, sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+
+/* ── 머리 ─────────────────────────────────────────── */
+
+.hero {
+  text-align: center;
+  padding: 88px 0 64px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -40% 50% auto;
+  width: 760px;
+  height: 760px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(255, 180, 40, .20), transparent 62%);
+  pointer-events: none;
+}
+.hero > * { position: relative; }
+
+.app-icon {
+  width: 124px; height: 124px;
+  border-radius: 27px;
+  filter: drop-shadow(0 14px 28px rgba(190, 120, 10, .34));
+}
+
+h1 {
+  font-size: clamp(2.3rem, 7vw, 3.3rem);
+  margin: 22px 0 6px;
+  letter-spacing: -.028em;
+  font-weight: 700;
+}
+
+.tagline {
+  font-size: clamp(1.02rem, 3.2vw, 1.2rem);
+  color: var(--ink-2);
+  margin: 0 auto 8px;
+  max-width: 30rem;
+}
+.tagline b { color: var(--ink); font-weight: 600; }
+
+/* ── 내려받기 ─────────────────────────────────────── */
+
+.get { margin-top: 30px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+  color: #3a2402;
+  font-size: 1.04rem;
+  font-weight: 650;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 13px;
+  box-shadow: 0 8px 20px -6px rgba(214, 134, 12, .6);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 13px 26px -7px rgba(214, 134, 12, .66); }
+.btn:active { transform: translateY(0); }
+
+.meta {
+  margin-top: 13px;
+  font-size: .83rem;
+  color: var(--ink-3);
+}
+.meta a { color: inherit; }
+
+/* ── 화면 그림 ────────────────────────────────────── */
+
+.shots {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 16px 0 72px;
+}
+.shot { max-width: 340px; flex: 1 1 290px; }
+.shot img {
+  width: 100%;
+  display: block;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.shot figcaption {
+  margin-top: 13px;
+  font-size: .85rem;
+  color: var(--ink-3);
+  text-align: center;
+}
+
+/* ── 조각 ─────────────────────────────────────────── */
+
+section { padding: 64px 0; border-top: 1px solid var(--line); }
+
+h2 {
+  font-size: 1.62rem;
+  letter-spacing: -.02em;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.lede { color: var(--ink-2); margin: 0 0 34px; max-width: 42rem; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 20px 20px 22px;
+}
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 650;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card p { margin: 0; color: var(--ink-2); font-size: .91rem; line-height: 1.65; }
+.card kbd {
+  font: inherit;
+  font-size: .8em;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 1px 6px;
+  color: var(--ink);
+}
+
+.dot {
+  width: 26px; height: 26px;
+  flex: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--gold-1), var(--gold-2));
+  display: grid;
+  place-items: center;
+  color: #40290a;
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+/* ── 스크럼 집중 ──────────────────────────────────── */
+
+.feature {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 44px;
+  align-items: center;
+}
+.feature img {
+  width: 100%;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.feature ul { padding-left: 1.1em; margin: 18px 0 0; color: var(--ink-2); }
+.feature li { margin-bottom: 9px; }
+.feature li b { color: var(--ink); font-weight: 600; }
+
+.sample {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 15px 17px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: .82rem;
+  line-height: 1.75;
+  color: var(--ink-2);
+  white-space: pre-wrap;
+  margin: 18px 0 0;
+}
+
+/* ── 설치 ─────────────────────────────────────────── */
+
+ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+ol.steps li {
+  counter-increment: s;
+  position: relative;
+  padding-left: 42px;
+  margin-bottom: 20px;
+  color: var(--ink-2);
+}
+ol.steps li::before {
+  content: counter(s);
+  position: absolute;
+  left: 0; top: 2px;
+  width: 27px; height: 27px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: .85rem;
+  font-weight: 650;
+  display: grid;
+  place-items: center;
+}
+ol.steps b { color: var(--ink); font-weight: 600; }
+
+.note {
+  border-left: 3px solid var(--gold-2);
+  background: var(--bg-soft);
+  border-radius: 0 10px 10px 0;
+  padding: 15px 18px;
+  margin: 26px 0 0;
+  font-size: .91rem;
+  color: var(--ink-2);
+}
+.note b { color: var(--ink); }
+
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: .87em;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+/* ── 꼬리 ─────────────────────────────────────────── */
+
+footer {
+  border-top: 1px solid var(--line);
+  padding: 40px 0 56px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: .86rem;
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer nav { margin-bottom: 12px; display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+
+@media (max-width: 720px) {
+  .feature { grid-template-columns: 1fr; gap: 28px; }
+  .hero { padding: 56px 0 44px; }
+  section { padding: 48px 0; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <img class="app-icon" src="assets/icon.png" alt="MacTonalDo 아이콘" width="124" height="124">
+    <h1>MacTonalDo</h1>
+    <p class="tagline">메뉴바에 사는 할 일 목록.<br><b>어제 한 일과 오늘 할 일</b>을 한 번에 복사해 스크럼에 붙여 넣는다.</p>
+
+    <div class="get">
+      <a class="btn" id="download"
+         href="https://github.com/sulmoJ/MacTonalDo/releases/latest/download/MacTonalDo-1.1.0.pkg">
+        ⬇ macOS용 내려받기
+      </a>
+      <p class="meta">
+        1.1.0 · 약 850KB · Apple Silicon · Intel · macOS 14 이상<br>
+        <a href="https://github.com/sulmoJ/MacTonalDo/releases">지난 판 보기</a> ·
+        <a href="https://github.com/sulmoJ/MacTonalDo">소스 보기</a>
+      </p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap shots">
+  <figure class="shot">
+    <img src="assets/panel-list.png" alt="오늘 할 일이 담긴 MacTonalDo 패널" width="340" height="315">
+    <figcaption>메뉴바를 누르면 바로 열린다</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="assets/panel-scrum.png" alt="데일리 스크럼 미리보기 화면" width="340" height="384">
+    <figcaption>스크럼 글은 붙여 넣기만 하면 된다</figcaption>
+  </figure>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>할 수 있는 것</h2>
+    <p class="lede">매일 아침 스크럼에 쓸 말을 다시 짜 맞추는 일이 없게 만든 앱이다.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3><span class="dot">☰</span> 메뉴바에서 끝난다</h3>
+        <p>독에 자리를 차지하지 않는다. 메뉴바 아이콘 옆에 남은 할 일 수가 붙어 있어, 누르지 않아도 몇 개 남았는지 보인다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot">☑</span> 세 단계로 적는다</h3>
+        <p>할 일 · 하위 할 일 · 메모. 상위를 체크하면 하위도 따라 체크되고, 하위를 다 끝내면 상위도 저절로 완료된다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot">▦</span> 날짜별로 나뉜다</h3>
+        <p>열면 늘 오늘부터다. <kbd>⌘[</kbd> <kbd>⌘]</kbd> 로 날짜를 넘기고 <kbd>⌘T</kbd> 로 오늘로 돌아온다. 어제 못 끝낸 일은 띠에서 한 번에 끌어온다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot">⚑</span> 우선순위</h3>
+        <p>높음 · 보통 · 낮음. 제목 앞 깃발을 눌러 돌려 가며 바꾸고, 그 날짜만 높은 순으로 다시 줄 세울 수 있다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot">↗</span> 내보내기</h3>
+        <p>텍스트나 마크다운으로. 남은 할 일만 골라서, 또는 전체 날짜를 묶어서. 클립보드로 복사하거나 파일로 저장한다.</p>
+      </div>
+      <div class="card">
+        <h3><span class="dot">⏻</span> 켜 두면 늘 거기 있다</h3>
+        <p>로그인할 때 저절로 뜬다. 끄고 싶으면 <kbd>⋯</kbd> 메뉴에서 한 번 끄면 다시 켜지 않는다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="scrum">
+  <div class="wrap feature">
+    <div>
+      <h2>데일리 스크럼, 한 번에</h2>
+      <p class="lede" style="margin-bottom:0">
+        머리말의 <kbd>scrum</kbd> 버튼이나 <kbd>⌘D</kbd>. 어제 끝낸 일과 오늘 할 일을 모아
+        그대로 붙여 넣을 수 있는 글로 만들어 준다.
+      </p>
+
+      <div class="sample">완료한 일
+
+* 0.9.0 배포
+  * 릴리즈 노트 정리
+* 디자인 토큰 정리
+
+
+진행할 일
+
+* 퇴직 연금 가이드
+* IAM 로그인 구현 페어진행</div>
+
+      <ul>
+        <li><b>월요일엔 금요일까지 거슬러 올라간다.</b> 주말을 작업일로 칠지는 고를 수 있다.</li>
+        <li><b>지난 미완료도 오늘 할 일이다.</b> 날짜가 어제로 남아 있어도 글에는 함께 담긴다.</li>
+        <li><b>목록 날짜를 옮길지는 따로 고른다.</b> 단추에 <code>복사하고 2개 옮기기</code> 처럼 적혀 있어, 누르기 전에 무슨 일이 일어날지 읽힌다. 옮긴 뒤엔 <code>되돌리기</code> 가 뜬다.</li>
+      </ul>
+    </div>
+    <img src="assets/panel-scrum.png" alt="데일리 스크럼 미리보기와 날짜 옮기기 체크박스" width="340" height="384">
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>설치</h2>
+    <p class="lede">서명을 받지 않은 앱이라 처음 한 번만 손이 더 간다.</p>
+
+    <ol class="steps">
+      <li><b>내려받은 <code>.pkg</code> 를 우클릭 → <code>열기</code>.</b> 두 번 눌러 열면 macOS 가 막는다. 우클릭으로 열어야 "그래도 열기" 가 나온다.</li>
+      <li><b>안내를 따라 넘어간다.</b> 맥 암호를 한 번 묻는다. <code>/Applications</code> 에 깔린다.</li>
+      <li><b>끝.</b> 설치가 끝나면 앱이 바로 뜨고, 다음 로그인부터는 저절로 뜬다.</li>
+    </ol>
+
+    <div class="note">
+      <b>왜 막히나요?</b> Apple 개발자 프로그램에 들어가야 받을 수 있는 서명이 아직 없어서입니다.
+      앱이 수상해서가 아니라, 누가 만들었는지 Apple 이 보증해 주지 않았다는 뜻입니다.
+      소스는 전부 <a href="https://github.com/sulmoJ/MacTonalDo" style="color:var(--accent)">GitHub</a> 에 있으니 직접 빌드해 쓰셔도 됩니다.
+    </div>
+
+    <div class="note">
+      <b>자료는 내 맥에만 있습니다.</b> <code>~/Library/Application Support/MacTonalDo/todos.json</code>
+      한 곳에 담기고, 앱은 네트워크를 쓰지 않습니다. 계정도 동기화도 없습니다.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <nav>
+      <a href="https://github.com/sulmoJ/MacTonalDo">GitHub</a>
+      <a href="https://github.com/sulmoJ/MacTonalDo/releases">릴리스</a>
+      <a href="https://github.com/sulmoJ/MacTonalDo/blob/main/CHANGELOG.md">바뀐 것들</a>
+      <a href="https://github.com/sulmoJ/MacTonalDo/issues">문제 알리기</a>
+    </nav>
+    MIT 라이선스 · 맥도날드와 아무 관계가 없습니다
+  </div>
+</footer>
+
+<script>
+// 내려받기 단추가 늘 최신 판을 가리키게 한다.
+// 판 번호가 올라가도 페이지를 고칠 일이 없도록, 릴리스 정보를 물어서 갈아 끼운다.
+// 못 물어 오면 위에 적어 둔 주소를 그대로 쓴다.
+(async () => {
+  const link = document.getElementById('download');
+  const meta = document.querySelector('.meta');
+  try {
+    const res = await fetch('https://api.github.com/repos/sulmoJ/MacTonalDo/releases/latest');
+    if (!res.ok) return;
+    const data = await res.json();
+    const pkg = (data.assets || []).find(a => a.name.endsWith('.pkg'));
+    if (!pkg) return;
+    link.href = pkg.browser_download_url;
+    const mb = (pkg.size / 1048576).toFixed(1);
+    meta.firstChild.textContent =
+      `${(data.tag_name || '').replace(/^v/, '')} · 약 ${mb}MB · Apple Silicon · Intel · macOS 14 이상`;
+  } catch (_) {
+    /* 네트워크가 막혀 있으면 적어 둔 주소로 둔다 */
+  }
+})();
+</script>
+
+</body>
+</html>
