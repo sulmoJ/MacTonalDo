@@ -55,13 +55,12 @@ enum ScrumBuilder {
 
     /// 전 작업일부터 어제까지 끝낸 일과, 오늘 진행할 일을 모은다.
     ///
-    /// `carryingOver` 가 켜져 있으면 지난 미완료를 오늘로 옮긴 결과를 미리 보여 준다.
-    /// 실제로 옮기는 일은 `TodoStore.pullOverdueToToday()` 가 하고,
-    /// 여기서는 같은 규칙으로 흉내만 내서 미리보기와 결과가 어긋나지 않게 한다.
+    /// 지난 미완료는 `진행할 일` 에 늘 담는다. 날짜가 어제로 남아 있든 오늘로 옮겼든
+    /// 오늘 할 일인 것은 같기 때문이다. 목록의 날짜를 실제로 옮기는 일
+    /// (`TodoStore.pullOverdueToToday()`) 은 글의 내용과 상관없이 따로 고른다.
     static func report(items: [TodoItem],
                        today: Date = DayFormat.today,
-                       week: WorkWeek,
-                       carryingOver: Bool) -> ScrumReport {
+                       week: WorkWeek) -> ScrumReport {
         let today = DayFormat.day(today)
         let since = DayFormat.previousWorkday(before: today, week: week)
         let yesterday = DayFormat.shifted(today, by: -1)
@@ -74,14 +73,8 @@ enum ScrumBuilder {
 
         let carryOver = items.filter { !$0.done && DayFormat.day($0.day) < today }
 
-        var working = items
-        if carryingOver {
-            for i in working.indices where !working[i].done && DayFormat.day(working[i].day) < today {
-                working[i].day = today
-            }
-        }
-        // 오늘 이미 체크한 일은 "진행할 일" 이 아니다.
-        let todo = working.filter { DayFormat.isSameDay($0.day, today) && !$0.done }
+        // 오늘까지의 미완료를 적어 둔 순서 그대로. 오늘 이미 체크한 일은 빼고.
+        let todo = items.filter { !$0.done && DayFormat.day($0.day) <= today }
 
         return ScrumReport(since: since, today: today, done: done, todo: todo, carryOver: carryOver)
     }

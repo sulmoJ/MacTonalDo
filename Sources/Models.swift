@@ -101,3 +101,10 @@ struct TodoFile: Codable {
     var version: Int = 2
     var items: [TodoItem] = []
 }
+
+/// 날짜를 옮긴 할 일 하나. 되돌릴 때 쓴다.
+struct MovedDay {
+    let id: UUID
+    /// 옮기기 전의 날짜.
+    let day: Date
+}

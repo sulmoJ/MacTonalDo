@@ -199,7 +199,7 @@ struct ContentView: View {
                     Spacer()
 
                     Button("오늘로 가져오기") {
-                        withAnimation(.easeInOut(duration: 0.2)) { store.pullOverdueToToday() }
+                        withAnimation(.easeInOut(duration: 0.2)) { _ = store.pullOverdueToToday() }
                     }
                     .buttonStyle(.plain)
                     .font(.system(size: 11, weight: .medium))

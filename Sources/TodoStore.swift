@@ -189,10 +189,25 @@ final class TodoStore: ObservableObject {
     }
 
     /// 지난 날에 안 끝난 채 남아 있는 할 일을 모두 오늘로 끌어온다.
-    func pullOverdueToToday() {
+    /// 지난 미완료를 오늘로 옮긴다.
+    /// 옮긴 할 일과 그 옛 날짜를 돌려준다. `restoreDays(_:)` 에 그대로 넘기면 되돌아간다.
+    @discardableResult
+    func pullOverdueToToday() -> [MovedDay] {
         let today = DayFormat.today
+        var moved: [MovedDay] = []
         for i in items.indices where !items[i].done && items[i].day < today {
+            moved.append(MovedDay(id: items[i].id, day: items[i].day))
             items[i].day = today
+        }
+        return moved
+    }
+
+    /// `pullOverdueToToday()` 가 옮긴 것을 제자리로 돌린다.
+    /// 그 사이 지워진 할 일은 조용히 건너뛴다.
+    func restoreDays(_ moved: [MovedDay]) {
+        for entry in moved {
+            guard let i = index(of: entry.id) else { continue }
+            items[i].day = entry.day
         }
     }
 

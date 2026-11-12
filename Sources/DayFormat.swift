@@ -48,6 +48,15 @@ enum DayFormat {
         return "\(nick) · \(short(date))"
     }
 
+    /// 며칠이나 묵었는지. "어제", "3일 전". 지나지 않았으면 nil.
+    /// 날짜 자체보다 얼마나 밀렸는지가 궁금할 때 쓴다.
+    static func age(_ date: Date) -> String? {
+        let days = -offsetFromToday(date)
+        guard days > 0 else { return nil }
+        if days == 1 { return "어제" }
+        return "\(days)일 전"
+    }
+
     /// 파일 이름에 쓰는 "2026-11-06"
     static func stamp(_ date: Date) -> String {
         stampFormatter.string(from: date)

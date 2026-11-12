@@ -5,8 +5,9 @@ struct MacTonalDoApp: App {
     @StateObject private var store = TodoStore()
 
     init() {
-        // 메뉴바 앱은 떠 있어야 쓸모가 있다. 처음 켤 때 한 번만 자동 실행을 걸어 둔다.
-        LoginItem.enableOnFirstRun()
+        // 메뉴바 앱은 떠 있어야 쓸모가 있다. 자동 실행을 걸어 둔다.
+        // 실행할 때마다 부른다 — 앱이 옮겨 가면 옛 등록은 못 쓰기 때문이다.
+        LoginItem.ensureEnabled()
     }
 
     var body: some Scene {
