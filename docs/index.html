@@ -461,9 +461,12 @@ footer nav { margin-bottom: 12px; display: flex; gap: 18px; justify-content: cen
     const pkg = (data.assets || []).find(a => a.name.endsWith('.pkg'));
     if (!pkg) return;
     link.href = pkg.browser_download_url;
-    const mb = (pkg.size / 1048576).toFixed(1);
+    // 1MB 가 안 되면 "0.8MB" 보다 "850KB" 가 읽기 쉽다.
+    const size = pkg.size < 1048576
+      ? `${Math.round(pkg.size / 1024)}KB`
+      : `${(pkg.size / 1048576).toFixed(1)}MB`;
     meta.firstChild.textContent =
-      `${(data.tag_name || '').replace(/^v/, '')} · 약 ${mb}MB · Apple Silicon · Intel · macOS 14 이상`;
+      `${(data.tag_name || '').replace(/^v/, '')} · 약 ${size} · Apple Silicon · Intel · macOS 14 이상`;
   } catch (_) {
     /* 네트워크가 막혀 있으면 적어 둔 주소로 둔다 */
   }

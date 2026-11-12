@@ -10,6 +10,7 @@
 
 ## 설치
 
+[소개 페이지](https://sulmoj.github.io/MacTonalDo/) 나
 [Releases](https://github.com/sulmoJ/MacTonalDo/releases) 에서 `MacTonalDo-1.1.0.pkg` 를
 받아 두 번 누르면 된다. `/Applications` 에 깔리고 설치가 끝나는 대로 바로 뜬다.
 
