@@ -444,7 +444,7 @@ footer nav { margin-bottom: 12px; display: flex; gap: 18px; justify-content: cen
 
     <div class="note">
       <b>터미널이 편하시면</b> 한 줄로 끝납니다. 내려받은 파일에 붙은 격리 꼬리표를 떼고 바로 엽니다.
-      <div class="sample" style="margin-top:11px">xattr -d com.apple.quarantine ~/Downloads/MacTonalDo-1.1.0.pkg
+      <div class="sample" id="xattr" style="margin-top:11px">xattr -d com.apple.quarantine ~/Downloads/MacTonalDo-1.1.0.pkg
 open ~/Downloads/MacTonalDo-1.1.0.pkg</div>
     </div>
 
@@ -494,6 +494,13 @@ open ~/Downloads/MacTonalDo-1.1.0.pkg</div>
       : `${(pkg.size / 1048576).toFixed(1)}MB`;
     meta.firstChild.textContent =
       `${(data.tag_name || '').replace(/^v/, '')} · 약 ${size} · Apple Silicon · Intel · macOS 14 이상`;
+
+    // 터미널 안내에 적힌 파일 이름도 같이 갈아 끼운다.
+    // 여기가 굳어 있으면 판이 올라간 뒤 그대로 따라 친 사람이 "파일 없음" 을 만난다.
+    const xattr = document.getElementById('xattr');
+    if (xattr) {
+      xattr.textContent = xattr.textContent.replace(/MacTonalDo-[0-9.]+\.pkg/g, pkg.name);
+    }
   } catch (_) {
     /* 네트워크가 막혀 있으면 적어 둔 주소로 둔다 */
   }
