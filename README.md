@@ -11,7 +11,7 @@
 ## 설치
 
 [소개 페이지](https://sulmoj.github.io/MacTonalDo/) 나
-[Releases](https://github.com/sulmoJ/MacTonalDo/releases) 에서 `MacTonalDo-1.1.0.pkg` 를
+[Releases](https://github.com/sulmoJ/MacTonalDo/releases) 에서 `MacTonalDo-1.2.0.pkg` 를
 받아 두 번 누르면 된다. `/Applications` 에 깔리고 설치가 끝나는 대로 바로 뜬다.
 
 ### 처음 열 때 막히면
@@ -38,13 +38,13 @@
 터미널이 편하면 꼬리표를 떼는 쪽이 빠르다.
 
 ```bash
-xattr -d com.apple.quarantine ~/Downloads/MacTonalDo-1.1.0.pkg
+xattr -d com.apple.quarantine ~/Downloads/MacTonalDo-1.2.0.pkg
 ```
 
 떼고 나면 두 번 눌러 열거나 이렇게 깔면 된다.
 
 ```bash
-sudo installer -pkg ~/Downloads/MacTonalDo-1.1.0.pkg -target /
+sudo installer -pkg ~/Downloads/MacTonalDo-1.2.0.pkg -target /
 ```
 
 회사에서 관리하는 맥이라 MDM 정책이 서명 없는 설치본을 막고 있으면
@@ -68,6 +68,7 @@ cp -R build/MacTonalDo.app /Applications/
 
 | 하고 싶은 것 | 방법 |
 | --- | --- |
+| 어디서나 패널 열기 | `⌃⌥⌘T` — 메뉴바 아이콘이 안 보여도 열린다 |
 | 할 일 추가 | 패널 위쪽 입력창에 쓰고 Enter (지금 보고 있는 날짜에 붙는다) |
 | 날짜 넘기기 | 날짜 띠의 `‹` `›` (⌘[ / ⌘]) |
 | 오늘로 돌아가기 | 날짜 띠 오른쪽 달력 아이콘 (⌘T) — 패널을 다시 열어도 오늘로 돌아온다 |
@@ -271,6 +272,8 @@ Esc 나 `닫기` 로 목록으로 돌아온다.
 | `Sources/Scrum.swift` | 작업일 범위와 데일리 스크럼 글 만들기 |
 | `Sources/ScrumView.swift` | 스크럼 미리보기 화면 |
 | `Sources/LoginItem.swift` | 로그인할 때 자동 실행 — `SMAppService` 와 LaunchAgent |
+| `Sources/Hotkey.swift` | 전역 단축키 — Carbon `RegisterEventHotKey` (권한 요구 없음) |
+| `Sources/QuickPanel.swift` | 메뉴바를 거치지 않고 여는 떠다니는 창 |
 | `Resources/Info.plist` | `LSUIElement` 로 Dock 아이콘 없이 메뉴바에만 띄운다 |
 | `Resources/AppIcon.icns` | 앱 아이콘. `Tools/make-icon.sh` 가 구워 낸다 |
 | `Tools/MakeAppIcon.swift` | 아이콘을 코드로 그린다. 그림 파일을 들고 다니지 않으려고 |
@@ -295,6 +298,32 @@ Esc 나 `닫기` 로 목록으로 돌아온다.
 - 아이콘은 그림 파일이 아니라 코드로 그린다. 모양을 바꿨으면
   `./Tools/make-icon.sh` 를 돌려 `Resources/AppIcon.icns` 를 다시 굽는다.
 
+## 메뉴바가 가득 찼을 때
+
+메뉴바 아이콘은 **자리를 못 받을 수 있다.** 노치가 있는 맥북에서 아이콘이
+몇 개만 늘면 macOS 가 넘치는 것을 소리 없이 빼 버린다. 늦게 올라온 앱일수록
+먼저 밀리고, 밀린 아이콘은 노치 뒤나 화면 밖으로 가서 영영 안 보인다.
+
+`MenuBarExtra` 가 유일한 입구인 앱은 그 순간 **떠 있으면서도 열 방법이 사라진다.**
+
+그래서 입구를 하나 더 두었다. `⌃⌥⌘T` 를 누르면 메뉴바와 상관없이 패널이 뜬다.
+화면 위쪽 가운데에 서고, 다른 데를 누르면 닫힌다. 전체 화면 위에도 뜬다.
+
+조합은 셋을 다 겹쳤다. 둘짜리는 이미 임자가 많아서, 빼앗으면 그쪽이 조용히
+먹통이 되기 때문이다. 그래도 겹치면 등록이 실패하는데, 조용히 넘어가는 대신
+로그를 남긴다.
+
+```bash
+/usr/bin/log show --predicate 'subsystem == "local.mactonaldo"' --last 1h | grep hotkey
+```
+
+손쉬운 사용(Accessibility) 권한은 **필요 없다.** `NSEvent` 의 전역 감시 대신
+Carbon 의 `RegisterEventHotKey` 를 쓰기 때문이다. 권한을 요구하면, 정작 앱을
+못 여는 사람에게 그 안내를 띄울 자리가 없다.
+
+메뉴바를 정리하고 싶으면 [Ice](https://github.com/jordanbaird/Ice) 같은
+메뉴바 관리 앱이 도움이 된다.
+
 ## 자동 실행
 
 메뉴바 앱은 떠 있지 않으면 없는 것과 같다. 그래서 **처음 실행할 때 한 번**
@@ -317,7 +346,7 @@ LaunchAgent 는 **다음 로그인부터** 먹는다. 깔자마자 한 벌 더 �
 ## 배포
 
 ```bash
-./package.sh          # dist/MacTonalDo-1.1.0.pkg
+./package.sh          # dist/MacTonalDo-1.2.0.pkg
 ```
 
 유니버설로 빌드해서 `/Applications` 에 깔리는 `.pkg` 를 만든다.

@@ -1,8 +1,10 @@
+import AppKit
 import SwiftUI
 
 @main
 struct MacTonalDoApp: App {
-    @StateObject private var store = TodoStore()
+    @StateObject private var store = TodoStore.shared
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     init() {
         // 메뉴바 앱은 떠 있어야 쓸모가 있다. 자동 실행을 걸어 둔다.
@@ -17,6 +19,22 @@ struct MacTonalDoApp: App {
             MenuBarLabel(remaining: store.pendingCount)
         }
         .menuBarExtraStyle(.window)
+    }
+}
+
+/// 메뉴바 장면 바깥에서 해야 하는 일을 맡는다.
+///
+/// 단축키를 다는 자리가 여기인 이유는, 메뉴바 아이콘이 자리를 못 받으면
+/// `MenuBarExtra` 쪽 코드가 아예 불리지 않기 때문이다. 그때야말로 단축키가
+/// 필요한 때이므로, 메뉴바와 상관없이 도는 곳에 달아야 한다.
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var quick: QuickPanel?
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        let quick = QuickPanel(store: .shared)
+        quick.listen()
+        self.quick = quick
     }
 }
 

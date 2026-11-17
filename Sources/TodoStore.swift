@@ -11,6 +11,14 @@ final class TodoStore: ObservableObject {
     let fileURL: URL
     private var cancellables = Set<AnyCancellable>()
 
+    /// 앱이 함께 쓰는 하나뿐인 목록.
+    ///
+    /// 메뉴바에서 열리는 패널과 단축키로 열리는 창이 같은 자료를 봐야 한다.
+    /// 둘은 서로 다른 자리에서 만들어져서 값을 건네줄 길이 마땅치 않아,
+    /// 파일이 하나뿐이라는 사실을 그대로 코드에 적어 둔다.
+    /// 미리보기와 테스트는 아래 `init(fileURL:)` 로 따로 만들면 된다.
+    static let shared = TodoStore()
+
     /// `fileURL` 을 주면 그 파일을 쓴다. 미리보기나 테스트에서 진짜 자료를 건드리지 않으려는 구멍이다.
     init(fileURL override: URL? = nil) {
         if let override {

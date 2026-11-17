@@ -118,6 +118,10 @@ struct ContentView: View {
                 Toggle("로그인할 때 자동 실행", isOn: launchAtLoginBinding)
                 Button("저장 폴더 열기") { revealStorage() }
                 Divider()
+                // 메뉴바가 가득 차 아이콘이 사라져도 이 조합으로 열 수 있다.
+                // 그걸 알고 있어야 쓸모가 있어서 눈에 띄는 자리에 적어 둔다.
+                Text("어디서나 열기  \(DefaultHotkey.label)")
+                Divider()
                 Button("종료") { NSApplication.shared.terminate(nil) }
                     .keyboardShortcut("q")
             } label: {
