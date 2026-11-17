@@ -24,6 +24,7 @@
   --ink-3: #8b8377;
   --line: #e7e0d5;
   --shadow: 0 18px 40px -12px rgba(60, 42, 12, .22);
+  --danger: #c0392b;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,6 +38,7 @@
     --ink-3: #857c6e;
     --line: #322c23;
     --shadow: 0 18px 44px -12px rgba(0, 0, 0, .6);
+    --danger: #ff9b8a;
   }
 }
 :root[data-theme="dark"] {
@@ -49,6 +51,7 @@
   --ink-3: #857c6e;
   --line: #322c23;
   --shadow: 0 18px 44px -12px rgba(0, 0, 0, .6);
+  --danger: #ff9b8a;
 }
 
 * { box-sizing: border-box; }
@@ -281,6 +284,8 @@ ol.steps b { color: var(--ink); font-weight: 600; }
   color: var(--ink-2);
 }
 .note b { color: var(--ink); }
+.note.warn { border-left-color: var(--danger); }
+.note.warn b { color: var(--danger); }
 
 code {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
@@ -415,14 +420,21 @@ footer nav { margin-bottom: 12px; display: flex; gap: 18px; justify-content: cen
     <p class="lede">서명을 받지 않은 앱이라 처음 한 번만 손이 더 간다. 막히는 게 정상이니 당황하지 마세요.</p>
 
     <ol class="steps">
-      <li><b>내려받은 <code>.pkg</code> 를 두 번 누른다.</b> macOS 가 막습니다. 여기까지는 정상입니다.</li>
-      <li><b>시스템 설정 → 개인정보 보호 및 보안</b> 을 열고 <b>맨 아래로</b> 내립니다. 차단됐다는 줄과 함께 <code>그래도 열기</code> 단추가 있습니다. 누릅니다.</li>
+      <li><b>내려받은 <code>.pkg</code> 를 두 번 누릅니다.</b> “악성 코드가 없음을 확인할 수 없습니다” 라는 경고창이 뜹니다. 여기까지는 정상입니다.</li>
+      <li><b>그 창을 <code>완료</code> 로 닫습니다.</b> 옆의 <code>휴지통으로 이동</code> 은 누르면 안 됩니다. 바로 아래 설명을 보세요.</li>
+      <li><b>곧바로 시스템 설정 → 개인정보 보호 및 보안</b> 을 열고 <b>맨 아래로</b> 내립니다. 차단됐다는 줄과 함께 <code>그래도 열기</code> 단추가 있습니다. 누릅니다.</li>
       <li><b>암호를 넣고 안내를 따라갑니다.</b> <code>/Applications</code> 에 깔리고, 끝나면 앱이 바로 뜹니다. 다음 로그인부터는 저절로 뜹니다.</li>
     </ol>
 
+    <div class="note warn">
+      <b><code>휴지통으로 이동</code> 을 누르지 마세요.</b> 내려받은 파일이 지워지는 데서 끝나지 않습니다.
+      차단된 기록까지 함께 사라져서 3번의 <code>그래도 열기</code> 가 아예 나타나지 않습니다.
+      눌러 버렸다면 파일을 다시 내려받아 1번부터 하시면 됩니다.
+    </div>
+
     <div class="note">
       <b><code>그래도 열기</code> 가 안 보이나요?</b> 이 단추는 막힌 뒤 <b>한 시간 안에만</b> 나타납니다.
-      시간이 지났으면 <code>.pkg</code> 를 다시 두 번 눌러 한 번 더 막힌 다음, 바로 설정을 여세요.
+      시간이 지났으면 <code>.pkg</code> 를 다시 두 번 눌러 한 번 더 막힌 다음, 바로 3번으로 가세요.
     </div>
 
     <div class="note">
